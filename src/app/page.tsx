@@ -1,46 +1,31 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Header } from "@/components/header"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/auth-context"
-import { useEffect } from "react"
+import type React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Header } from "@/components/header";
+import Link from "next/link";
+import useLoginHook from "./useLoginHook";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const { login, user } = useAuth()
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      router.push(`/projects?tenant_id=${user.tenantId}`)
-    }
-  }, [user, router])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    try {
-      await login(email, password)
-      // Redirect will happen automatically via useEffect above
-    } catch (error) {
-      console.error("Login failed:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
+  const {
+    user,
+    handleSubmit,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLoading,
+  } = useLoginHook();
   // Don't render login form if user is already logged in
   if (user) {
     return (
@@ -52,7 +37,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -107,5 +92,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

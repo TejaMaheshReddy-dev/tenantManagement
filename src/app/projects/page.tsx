@@ -1,87 +1,40 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, ArrowUpDown, CreditCard } from "lucide-react"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-
-interface Project {
-  id: string
-  name: string
-  state: string
-  status: "active" | "inactive" | "pending"
-  created_date: string
-}
+import { Header } from "@/components/header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Filter, ArrowUpDown, CreditCard } from "lucide-react";
+import Link from "next/link";
+import useProjectsHook from "./useProjectsHook";
 
 export default function ProjectsPage() {
-  const searchParams = useSearchParams()
-  const tenantId = searchParams.get("tenant_id")
-
-  const [projects, setProjects] = useState<Project[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [stateFilter, setStateFilter] = useState("all")
-  const [sortBy, setSortBy] = useState("name")
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Mock API call
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setIsLoading(true)
-      // Simulate API call
-      setTimeout(() => {
-        const mockProjects: Project[] = [
-          { id: "proj-1", name: "Project A", state: "California", status: "active", created_date: "2024-01-15" },
-          { id: "proj-2", name: "Project B", state: "Texas", status: "pending", created_date: "2024-02-20" },
-          { id: "proj-3", name: "Project C", state: "California", status: "inactive", created_date: "2024-03-10" },
-          { id: "proj-4", name: "Project D", state: "New York", status: "active", created_date: "2024-01-05" },
-          { id: "proj-5", name: "Project E", state: "Florida", status: "active", created_date: "2024-02-28" },
-        ]
-        setProjects(mockProjects)
-        setFilteredProjects(mockProjects)
-        setIsLoading(false)
-      }, 500)
-    }
-
-    fetchProjects()
-  }, [tenantId])
-
-  // Filter and sort projects
-  useEffect(() => {
-    let filtered = projects.filter(
-      (project) =>
-        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.state.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-
-    if (stateFilter !== "all") {
-      filtered = filtered.filter((project) => project.state === stateFilter)
-    }
-
-    // Sort projects
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.name.localeCompare(b.name)
-        case "state":
-          return a.state.localeCompare(b.state)
-        case "date":
-          return new Date(b.created_date).getTime() - new Date(a.created_date).getTime()
-        default:
-          return 0
-      }
-    })
-
-    setFilteredProjects(filtered)
-  }, [projects, searchTerm, stateFilter, sortBy])
-
-  const uniqueStates = Array.from(new Set(projects.map((p) => p.state)))
+  const {
+    isLoading,
+    tenantId,
+    searchTerm,
+    stateFilter,
+    setStateFilter,
+    uniqueStates,
+    sortBy,
+    filteredProjects,
+    setSearchTerm,
+    setSortBy,
+  } = useProjectsHook();
 
   if (isLoading) {
     return (
@@ -91,7 +44,7 @@ export default function ProjectsPage() {
           <div className="text-center">Loading projects...</div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -129,7 +82,7 @@ export default function ProjectsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All States</SelectItem>
-              {uniqueStates.map((state) => (
+              {uniqueStates.map((state: any) => (
                 <SelectItem key={state} value={state}>
                   {state}
                 </SelectItem>
@@ -151,14 +104,21 @@ export default function ProjectsPage() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
-            <Card key={project.id} className="hover:shadow-lg transition-shadow">
+          {filteredProjects.map((project: any) => (
+            <Card
+              key={project.id}
+              className="hover:shadow-lg transition-shadow"
+            >
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{project.name}</CardTitle>
                   <Badge
                     variant={
-                      project.status === "active" ? "default" : project.status === "pending" ? "secondary" : "outline"
+                      project.status === "active"
+                        ? "default"
+                        : project.status === "pending"
+                        ? "secondary"
+                        : "outline"
                     }
                   >
                     {project.status}
@@ -189,10 +149,12 @@ export default function ProjectsPage() {
 
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No projects found matching your criteria.</p>
+            <p className="text-muted-foreground">
+              No projects found matching your criteria.
+            </p>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
