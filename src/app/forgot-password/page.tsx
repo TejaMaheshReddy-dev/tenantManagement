@@ -1,31 +1,25 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Header } from "@/components/header"
-import Link from "next/link"
-import { ArrowLeft, Mail } from "lucide-react"
+import type React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Header } from "@/components/header";
+import Link from "next/link";
+import { ArrowLeft, Mail } from "lucide-react";
+import useForgotPasswordHook from "./useForgotPasswordHook";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    // Simulate password reset request
-    setTimeout(() => {
-      setIsLoading(false)
-      setIsSubmitted(true)
-    }, 1000)
-  }
+  const { isSubmitted, email, handleSubmit, setEmail, isLoading } =
+    useForgotPasswordHook();
 
   if (isSubmitted) {
     return (
@@ -38,7 +32,9 @@ export default function ForgotPasswordPage() {
                 <Mail className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <CardTitle className="text-2xl">Check your email</CardTitle>
-              <CardDescription>We've sent a password reset link to {email}</CardDescription>
+              <CardDescription>
+                We've sent a password reset link to {email}
+              </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-sm text-muted-foreground mb-4">
@@ -56,7 +52,7 @@ export default function ForgotPasswordPage() {
           </Card>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -65,9 +61,12 @@ export default function ForgotPasswordPage() {
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Reset password</CardTitle>
+            <CardTitle className="text-2xl text-center">
+              Reset password
+            </CardTitle>
             <CardDescription className="text-center">
-              Enter your email address and we'll send you a link to reset your password
+              Enter your email address and we'll send you a link to reset your
+              password
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -99,5 +98,5 @@ export default function ForgotPasswordPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

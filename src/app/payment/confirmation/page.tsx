@@ -1,38 +1,20 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Header } from "@/components/header"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, ArrowRight } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
+import { Header } from "@/components/header";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CheckCircle, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import useConfirmationHook from "./useConfirmationHook";
 
 export default function ConfirmationPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const sessionId = searchParams.get("session_id")
-  const plan = searchParams.get("plan")
-
-  const [paymentStatus, setPaymentStatus] = useState<"loading" | "success" | "failed">("loading")
-
-  useEffect(() => {
-    // Mock API call to check payment status
-    const checkPaymentStatus = async () => {
-      if (!sessionId) {
-        setPaymentStatus("failed")
-        return
-      }
-
-      // Simulate API call to /payment/status?session_id=...
-      setTimeout(() => {
-        // Mock successful payment
-        setPaymentStatus("success")
-      }, 1500)
-    }
-
-    checkPaymentStatus()
-  }, [sessionId])
+  const { paymentStatus, plan, sessionId } = useConfirmationHook();
 
   if (paymentStatus === "loading") {
     return (
@@ -43,12 +25,14 @@ export default function ConfirmationPage() {
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
               <h2 className="text-xl font-semibold mb-2">Confirming Payment</h2>
-              <p className="text-muted-foreground">Please wait while we process your payment...</p>
+              <p className="text-muted-foreground">
+                Please wait while we process your payment...
+              </p>
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (paymentStatus === "failed") {
@@ -60,7 +44,9 @@ export default function ConfirmationPage() {
             <Card className="w-full max-w-md">
               <CardHeader className="text-center">
                 <CardTitle className="text-red-600">Payment Failed</CardTitle>
-                <CardDescription>There was an issue processing your payment. Please try again.</CardDescription>
+                <CardDescription>
+                  There was an issue processing your payment. Please try again.
+                </CardDescription>
               </CardHeader>
               <CardContent className="text-center">
                 <Link href="/payment">
@@ -71,7 +57,7 @@ export default function ConfirmationPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -84,8 +70,12 @@ export default function ConfirmationPage() {
               <div className="mx-auto mb-4">
                 <CheckCircle className="h-16 w-16 text-green-500" />
               </div>
-              <CardTitle className="text-3xl text-green-600">Payment Successful!</CardTitle>
-              <CardDescription className="text-lg">Thank you for upgrading to the {plan} plan</CardDescription>
+              <CardTitle className="text-3xl text-green-600">
+                Payment Successful!
+              </CardTitle>
+              <CardDescription className="text-lg">
+                Thank you for upgrading to the {plan} plan
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-muted p-4 rounded-lg">
@@ -101,14 +91,17 @@ export default function ConfirmationPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Status:</span>
-                    <span className="text-green-600 font-semibold">Confirmed</span>
+                    <span className="text-green-600 font-semibold">
+                      Confirmed
+                    </span>
                   </div>
                 </div>
               </div>
 
               <div className="text-center space-y-4">
                 <p className="text-muted-foreground">
-                  Your account has been upgraded and you now have access to all {plan} plan features.
+                  Your account has been upgraded and you now have access to all{" "}
+                  {plan} plan features.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -128,5 +121,5 @@ export default function ConfirmationPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
